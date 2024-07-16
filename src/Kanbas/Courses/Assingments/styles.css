@@ -1,0 +1,42 @@
+/* styles.css */
+
+.container-fluid {
+    padding: 20px;
+}
+
+#wd-search-assignment {
+    width: 300px;
+}
+
+.list-group-item {
+    padding: 15px;
+}
+
+.wd-assignment-link {
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.wd-assignment-link:hover {
+    text-decoration: underline;
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.form-label {
+    margin-bottom: 5px;
+}
+
+.form-control {
+    margin-bottom: 15px;
+}

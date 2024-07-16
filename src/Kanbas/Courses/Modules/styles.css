@@ -1,0 +1,70 @@
+/* styles.css */
+
+/* Hide the fourth column (Course Status) on medium screens and below */
+@media (max-width: 992px) {
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .col-md-2:last-child {
+        display: none !important;
+    }
+}
+
+/* Hide the first and second columns (Navigation sidebars) on small screens and below */
+@media (max-width: 768px) {
+    .col-md-2 {
+        display: none !important;
+    }
+
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.wd-module {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.wd-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.wd-lessons, .wd-content {
+    padding-left: 20px;
+}
+
+.wd-lesson, .wd-content-item {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+} 
+
+body {
+    margin: 0;  padding: 0;
+  }
+  body * {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .btn-secondary {
+    --bs-btn-color: #000;
+    --bs-btn-bg: #c7cdd1;
+    --bs-btn-border-color: #c7cdd1;
+    --bs-btn-hover-color: #fff;
+  }
+  .bg-secondary {
+    background-color: #c7cdd1 !important;
+  }
+  .border-gray {
+    border: 1px solid gray;
+  }
+  
+  
+  
+  
