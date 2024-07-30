@@ -10,9 +10,10 @@ import Grades from "./Grades";
 import Assignments from './Assingments';
 import AssignmentEditor from './Assingments/Editor';
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
+
   const { pathname } = useLocation();
   const pathnames = pathname.split("/").filter(x => x);
 
