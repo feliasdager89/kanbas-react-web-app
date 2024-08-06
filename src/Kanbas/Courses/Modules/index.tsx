@@ -1,138 +1,101 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
-import { addModule, deleteModule, updateModule } from './reducer';
-import { BsGripVertical } from 'react-icons/bs';
-import LessonControlButtons from './LessonControlButtons';
-import ModuleControlButtons from './ModuleControlButton';
+import { useParams } from "react-router";
+import * as db from "../../Database";
+
+
+import { useState, useEffect } from "react";
+import { addModule, editModule, updateModule, deleteModule , setModules} from "./reducer";
+import { useSelector, useDispatch } from "react-redux";
+import ModulesControls from "./ModuleControl";
+
+import * as client from "./client";
+import ModuleControlButtons from "./ModuleControlButton";
+
 
 export default function Modules() {
   const { cid } = useParams();
+  const [moduleName, setModuleName] = useState("");
+  const { modules } = useSelector((state: any) => state.modulesReducer);
   const dispatch = useDispatch();
-  const modules = useSelector((state: RootState) => state.modulesReducer.modules.filter(module => module.course === cid));
-  
-  const [currentModule, setCurrentModule] = useState<any>({
-    _id: '',
-    name: '',
-    course: cid,
-    lessons: []
-  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setCurrentModule({ ...currentModule, [name]: value });
+  const createModule = async (module: any) => {
+    const newModule = await client.createModule(cid as string, module);
+    dispatch(addModule(newModule));
   };
 
-  const handleAddModule = () => {
-    if (!currentModule.name.trim()) {
-      alert('Module name is required');
-      return;
-    }
-    dispatch(addModule(currentModule));
-    setCurrentModule({
-      _id: '',
-      name: '',
-      course: cid,
-      lessons: []
-    });
+  const fetchModules = async () => {
+    const modules = await client.findModulesForCourse(cid as string);
+    dispatch(setModules(modules));
+  };
+  useEffect(() => {
+    fetchModules();
+  }, []);
+
+  const removeModule = async (moduleId: string) => {
+    await client.deleteModule(moduleId);
+    dispatch(deleteModule(moduleId));
   };
 
-  const handleUpdateModule = () => {
-    if (!currentModule.name.trim()) {
-      alert('Module name is required');
-      return;
-    }
-    dispatch(updateModule(currentModule));
-    setCurrentModule({
-      _id: '',
-      name: '',
-      course: cid,
-      lessons: []
-    });
+  const saveModule = async (module: any) => {
+    const status = await client.updateModule(module);
+    dispatch(updateModule(module));
   };
 
-  const handleDeleteModule = (id: string) => {
-    dispatch(deleteModule(id));
-  };
 
   return (
-    <div className="p-4" id="wd-modules">
-      <h1 id="wd-modules-title">Modules</h1>
-      <hr />
-
-      <h5>
-        New Module
-        <button
-          className="btn btn-primary float-end"
-          id="wd-add-new-module-click"
-          onClick={handleAddModule}
-        >
-          Add
-        </button>
-        <button
-          className="btn btn-warning float-end me-2"
-          onClick={handleUpdateModule}
-          id="wd-update-module-click"
-        >
-          Update
-        </button>
-      </h5>
-      <hr />
-
-      <input
-        value={currentModule.name}
-        className="form-control mb-2"
-        name="name"
-        placeholder="Module Name"
-        onChange={handleInputChange}
+    <div id="wd-modules">
+      <ModulesControls
+        setModuleName={setModuleName}
+        moduleName={moduleName}
+        addModule={() => {
+          createModule({ name: moduleName, course: cid });
+          setModuleName("");
+        }}
       />
-      <textarea
-        value={currentModule.description}
-        className="form-control mb-2"
-        name="description"
-        placeholder="Module Description"
-        onChange={handleInputChange}
-      />
-      <hr />
-
+      <br />
+      <br />
+      <br />
+      <br />
       <ul id="wd-modules" className="list-group rounded-0">
-        {modules.map((module) => (
-          <li key={module._id} className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
-            <div className="wd-title p-3 ps-2 bg-secondary d-flex justify-content-between">
-              <div>
-                <BsGripVertical className="me-2 fs-3" />
-                {module.name}
+        {modules
+          .filter((module: any) => module.course === cid)
+          .map((module: any) => (
+            <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
+              <div className="wd-title p-3 ps-4 bg-secondary text-black">
+                {!module.editing && module.name}
+                {module.editing && (
+                  <input
+                    className="form-control w-50 d-inline-block"
+                    onChange={(e) =>
+                      saveModule({ ...module, name: e.target.value })
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        saveModule({ ...module, editing: false });
+                      }
+                    }}
+                    value={module.name}
+                  />
+                )}
+                { 
+                <ModuleControlButtons
+                   moduleId={module._id}
+                   deleteModule={(moduleId) => { removeModule(moduleId); }}
+                   editModule={(moduleId) => dispatch(editModule(moduleId))}
+                />
+                
+                }
               </div>
-              <div>
-                <button
-                  className="btn btn-warning me-2"
-                  onClick={() => setCurrentModule(module)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleDeleteModule(module._id)}
-                >
-                  Delete
-                </button>
-              </div>
-              <ModuleControlButtons />
-            </div>
-            {module.lessons && (
-              <ul className="wd-lessons list-group rounded-0">
-                {module.lessons.map((lesson: any) => (
-                  <li key={lesson._id} className="wd-lesson list-group-item p-3 ps-1">
-                    <BsGripVertical className="me-2 fs-3" />
-                    {lesson.name}
-                    <LessonControlButtons />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
+              {module.lessons && (
+                <ul className="wd-lessons list-group rounded-0">
+                  {module.lessons.map((lesson: any) => (
+                    <li className="wd-lesson list-group-item p-3 ps-4">
+                      {lesson.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
       </ul>
     </div>
   );

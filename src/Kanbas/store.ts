@@ -4,7 +4,7 @@ import assignmentsReducer from "./Courses/Assingments/assignmentsReducer";
 const store = configureStore({
   reducer: {
     modulesReducer,
-    assignments: assignmentsReducer,
+    assignmentsReducer,
     
   },
 });
@@ -12,4 +12,3 @@ const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export default store;
-
