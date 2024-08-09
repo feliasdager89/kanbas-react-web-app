@@ -15,6 +15,9 @@ export default function CoursesNavigation() {
                 <li className="nav-item">
                     <NavLink className="nav-link" to="Assignments">Assignments</NavLink>
                 </li>
+                <li className="nav-item">
+                    <NavLink className="nav-link" to="People">People</NavLink>
+                </li>
             </ul>
         </nav>
 
