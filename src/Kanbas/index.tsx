@@ -10,13 +10,14 @@ import * as client from "./Courses/client";
 import { useState } from "react";
 import store from "./store";
 import { Provider } from "react-redux";
+import Account from './Account';
 
 
 export default function Kanbas() {
   const [courses, setCourses] = useState<any[]>([]);
 
   const fetchCourses = async () => {
-    const courses = await client.fetchAllCourses();
+    const courses = await client.findAllCourses();
     setCourses(courses);
   };
   useEffect(() => {
@@ -59,8 +60,8 @@ export default function Kanbas() {
         <KanbasNavigation />
         <div className="wd-main-content-offset flex-grow-1 p-3">
             <Routes>
+              <Route path="/Account/*" element={<Account />} />
               <Route path="/" element={<Navigate to="Dashboard" />} />
-              <Route path="Account" element={<h1>Account</h1>} />
               <Route path="Dashboard" element={<Dashboard  
               courses={courses}
               course={course}
